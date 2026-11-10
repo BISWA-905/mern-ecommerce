@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 // Connect to the database
 connectDB();
@@ -20,8 +22,10 @@ app.get('/', (req, res) => {
   res.send('E-commerce API is running!');
 });
 
-// All auth routes start with /api/auth
+// Connect the routes to their addresses
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
 
 // Pick the port number (the server's "door number")
 const PORT = process.env.PORT || 5000;

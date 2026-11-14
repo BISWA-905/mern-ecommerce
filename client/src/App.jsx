@@ -10,6 +10,7 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import AdminDashboard from './pages/AdminDashboard';
 
 // A temporary page, until we build the real ones
 function Placeholder({ title }) {
@@ -68,7 +69,7 @@ function App() {
             path="/admin"
             element={
               <ProtectedRoute adminOnly>
-                <Placeholder title="Admin Dashboard" />
+                <AdminDashboard/>
               </ProtectedRoute>
             }
           />

@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import Stars from '../components/Stars';
 import { formatPrice } from '../utils/format';
+import ReviewForm from '../components/ReviewForm';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -44,6 +45,15 @@ function ProductDetails() {
 
     loadProduct();
   }, [id]);
+    // Reload the product (and its reviews) quietly, after a new review
+  const refreshProduct = async () => {
+    try {
+      const { data } = await api.get(`/products/${id}`);
+      setProduct(data);
+    } catch {
+      // If this fails, the old page simply stays as it is
+    }
+  };
 
   const handleAddToCart = async () => {
     // Only logged-in people have a cart
@@ -235,6 +245,7 @@ function ProductDetails() {
         <h2 className="text-2xl font-bold text-gray-800">
           Reviews and ratings
         </h2>
+                <ReviewForm productId={product._id} onSubmitted={refreshProduct} />
 
         {reviews.length === 0 ? (
           <p className="mt-4 text-gray-500">

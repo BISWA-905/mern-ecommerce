@@ -11,16 +11,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import AdminDashboard from './pages/AdminDashboard';
-
-// A temporary page, until we build the real ones
-function Placeholder({ title }) {
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-16 text-center">
-      <h1 className="text-3xl font-bold text-gray-800">{title}</h1>
-      <p className="mt-2 text-gray-500">This page is coming soon.</p>
-    </div>
-  );
-}
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -74,8 +65,9 @@ function App() {
             }
           />
 
-          <Route path="*" element={<Placeholder title="Page not found" />} />
-        </Routes>
+      <Route 
+        path="*" element={<NotFound />} />    
+          </Routes>
       </main>
 
       <Footer />

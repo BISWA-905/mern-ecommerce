@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Review = require('../models/Review');
+const Order = require('../models/Order');
 
 // The only fields an admin is allowed to set on a product
 const allowedFields = [
@@ -180,11 +181,72 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// ADD a review (a logged-in customer who has ordered this product)
+// POST /api/products/:id/reviews   body: { rating, comment }
+const createProductReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rating = Number(req.body.rating);
+    const comment = (req.body.comment || '').trim();
 
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({ message: 'Invalid product id' });
+    }
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return res
+        .status(400)
+        .json({ message: 'Rating must be a whole number from 1 to 5' });
+    }
+    if (!comment) {
+      return res.status(400).json({ message: 'Please write a comment' });
+    }
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Only people who ordered this product can review it
+    const hasOrdered = await Order.findOne({
+      user: req.user._id,
+      'orderItems.product': id,
+      status: { $ne: 'Cancelled' },
+    });
+    if (!hasOrdered) {
+      return res
+        .status(403)
+        .json({ message: 'You can review a product only after ordering it' });
+    }
+
+    const alreadyReviewed = await Review.findOne({
+      product: id,
+      user: req.user._id,
+    });
+    if (alreadyReviewed) {
+      return res
+        .status(400)
+        .json({ message: 'You have already reviewed this product' });
+    }
+
+    await Review.create({ user: req.user._id, product: id, rating, comment });
+
+    // Work out the new average rating
+    const reviews = await Review.find({ product: id });
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    product.numReviews = reviews.length;
+    product.rating = Math.round((total / reviews.length) * 10) / 10;
+    await product.save();
+
+    res.status(201).json({ message: 'Thank you for your review' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductReview,
 };

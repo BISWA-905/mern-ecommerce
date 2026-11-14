@@ -7,6 +7,9 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
 
 // A temporary page, until we build the real ones
 function Placeholder({ title }) {
@@ -37,15 +40,25 @@ function App() {
             path="/cart"
             element={
               <ProtectedRoute>
-                <Placeholder title="Cart" />
+                <Cart />
               </ProtectedRoute>
             }
           />
           <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+
+
+          <Route
             path="/orders"
             element={
               <ProtectedRoute>
-                <Placeholder title="My Orders" />
+                <Orders />
               </ProtectedRoute>
             }
           />

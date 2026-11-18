@@ -8,7 +8,7 @@ Customers can register, browse, search, filter and sort products, add them to a 
 
 - **Website:** https://shopease-phi-red.vercel.app
 - **Backend API:** https://shopease-api-se6x.onrender.com
-- **Demo video:** _add your video link here_
+
 
 > The backend runs on a free hosting plan and goes to sleep when nobody is using it. The first request after a break can take up to a minute. Please open the website once and wait for the products to load.
 
